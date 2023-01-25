@@ -1,7 +1,10 @@
 const { DataTypes, UUIDV4 } = require("sequelize");
+const sequelize = require("../lib/database");
 
+console.warn("VOCAB MODEL");
 const vocabularyNameLength = 100
-module.exports = (sequelize) => { sequelize.define(
+
+const Vocabulary = sequelize.define(
   "vocabulary",
   {
     id: {
@@ -10,10 +13,15 @@ module.exports = (sequelize) => { sequelize.define(
       defaultValue: UUIDV4,
     },
     name: {
-        type: DataTypes.STRING(vocabularyNameLength),
-      }
+      type: DataTypes.STRING(vocabularyNameLength),
+    }
   },
   {
     tableName: "vocabulary",
   }
-)}
+);
+// Vocabulary.sync()
+
+const vocabularyQueries = {};
+
+module.exports = {Vocabulary, vocabularyQueries};

@@ -1,9 +1,10 @@
 const { DataTypes, UUIDV4 } = require("sequelize");
+const sequelize = require("../lib/database");
 
 const packageNameLength = 100
 const packageVersionLength = 100
 
-module.exports = (sequelize) => { sequelize.define(
+const Package = sequelize.define(
   "package",
   {
     id: {
@@ -69,4 +70,7 @@ module.exports = (sequelize) => { sequelize.define(
   {
     tableName: "package",
   }
-)}
+);
+
+
+module.exports = Package;

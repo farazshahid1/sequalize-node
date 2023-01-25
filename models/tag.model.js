@@ -1,33 +1,41 @@
 const { DataTypes, UUIDV4 } = require("sequelize");
+const sequelize = require("../lib/database");
+const { Vocabulary } = require("./vocabulary.model");
 
-const tagNameLength = 100
-module.exports = (sequelize) => {
-    const {vocabulary} = sequelize.models
-    console.log("tag check: ", sequelize.models)
-   const Tags = sequelize.define(
-        "tag",
-        {
-            id: {
-                type: DataTypes.TEXT,
-                primaryKey: true,
-                defaultValue: UUIDV4,
-            },
-            name: {
-                type: DataTypes.STRING(tagNameLength),
-                unique: true,
-                allowNull: false
-            }
+console.warn("TAG MODEL");
+
+const tagNameLength = 100;
+const Tag = sequelize.define(
+    "tag",
+    {
+        id: {
+            type: DataTypes.TEXT,
+            primaryKey: true,
+            defaultValue: UUIDV4,
         },
-        {
-            tableName: "tag",
+        name: {
+            type: DataTypes.STRING(tagNameLength),
+            unique: true,
+            allowNull: false
+        },
+        vocabulary_id: {
+            type: DataTypes.STRING(tagNameLength),
+            references: {
+                model: Vocabulary,
+                key: "id"
+            }
         }
-    )
+    },
+    {
+        tableName: "tag",
+    }
+);
 
-    vocabulary.hasMany(Tags,{
-        foreignKey:{name:"vocabulary_id",type:DataTypes.STRING(tagNameLength)}
-    });
-    // Tags.belongsTo(vocabulary,{
-    //     foreignKey:"vocabulary_id"
-    // });
+Vocabulary.hasMany(Tag, {
+    foreignKey: { name: "vocabulary_id", type: DataTypes.STRING(tagNameLength) }
+});
+Tag.belongsTo(Vocabulary, {
+    foreignKey: { name: "vocabulary_id", type: DataTypes.STRING(tagNameLength) }
+})
 
-}
+module.exports = { Tag }

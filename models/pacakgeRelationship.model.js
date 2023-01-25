@@ -1,7 +1,7 @@
 const { DataTypes, UUIDV4 } = require("sequelize");
-const db = require("../database");
+const sequelize = require("../lib/database");
 
-const PackageRelationship = db.define(
+const PackageRelationship = sequelize.define(
   "package_relationship",
   {
     id: {

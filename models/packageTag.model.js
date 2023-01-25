@@ -1,40 +1,53 @@
 const { DataTypes, UUIDV4 } = require("sequelize");
+const sequelize = require("../lib/database");
+const Package  = require("./package.model");
+const { Tag } = require("./tag.model");
 
-module.exports = (sequelize) => {
-  const { package, tag } = sequelize.models
-  console.log("tag package check: ", sequelize.models)
-  const PackageTag = sequelize.define(
-    "package_tag",
-    {
-      id: {
-        type: DataTypes.TEXT,
-        primaryKey: true,
-        defaultValue: UUIDV4,
-      },
-      state: {
-        type: DataTypes.TEXT
-      },
-      package_id: {
-        type: DataTypes.TEXT,
-        references: {
-          model: package,
-          key: 'id'
-        }
-      },
-      teg_id: {
-        type: DataTypes.TEXT,
-        references: {
-          model: tag,
-          key: 'id'
-        }
-      },
+console.warn("PACKAGE_TAG MODEL");
+
+const PackageTag = sequelize.define(
+  "package_tag",
+  {
+    id: {
+      type: DataTypes.TEXT,
+      primaryKey: true,
+      defaultValue: UUIDV4,
     },
-    {
-      tableName: "package_tag",
-    }
-  )
+    state: {
+      type: DataTypes.TEXT
+    },
+    package_id: {
+      type: DataTypes.TEXT,
+      references: {
+        model: Package,
+        key: "id"
+      }
+    },
+    tag_id: {
+      type: DataTypes.TEXT,
+      references: {
+        model: Tag,
+        key: "id"
+      }
+    },
+  },
+  {
+    tableName: "package_tag",
+  }
+);
 
-  // package.belongsToMany(tag, { through: PackageTag })
-  // tag.belongsToMany(package, { through: PackageTag })
+Package.belongsToMany(Tag, {
+    through:PackageTag,
+    foreignKey:'package_id',
+    otherKey:'tag_id'
+})
 
-}
+Tag.belongsToMany(Package, {
+    through:PackageTag,
+    foreignKey:'tag_id',
+    otherKey:'package_id'
+})
+
+
+module.exports = PackageTag
+
